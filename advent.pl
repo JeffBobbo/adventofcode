@@ -53,7 +53,7 @@ sub day1
   print 'Santa is on floor ' . $floor . "\n";
   }
   #Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.
-  { 
+  {
   my $floor = 0;
   my $i = 0;
   for ($i = 0; $i < length($data); $i++)
@@ -121,9 +121,7 @@ sub day3
 
     for (my $i = 0; $i < length($data); $i++)
     {
-      my $dir = substr($data, $i, 1);
-
-      switch ($dir)
+      switch (substr($data, $i, 1))
       {
         case '^'
         {
@@ -148,75 +146,52 @@ sub day3
     my $houses = 0;
     foreach my $i (keys(%{$places}))
     {
-      foreach my $j (keys(%{$places->{$i}}))
-      {
-        if ($places->{$i}{$j} > 0)
-        {
-          $houses++;
-        }
-      }
+      $houses += length(keys(%{$places->{$i}}));
     }
     print 'Santa delivered presents to ' . $houses . ' houses' . "\n";
   }
 
   # puzzle 2
   {
-    my $sx = 0;
-    my $sy = 0;
-    my $rx = 0;
-    my $ry = 0;
-    my $places = {0 => {0 => {'s' => 1, 'r' => 1}}};
+    my $places = {0 => {0 => 2}};
 
-    my $which = 0; # 0 means santa, 1 means Robo-Santa
-    for (my $i = 0; $i < length($data); $i++)
+    for (my $i = 0; $i < 2; $i++)
     {
-      my $d = substr($data, $i, 1);
-      
-      my $x = \$sx;
-      my $y = \$sy;
-      if (($which & 1) == 1)
+      my $x = 0;
+      my $y = 0;
+      for (my $j = $i; $j < length($data); $j += 2)
       {
-        $x = \$rx;
-        $y = \$ry;
+        switch (substr($data, $j, 1))
+        {
+          case '^'
+          {
+            $y++;
+          }
+          case 'v'
+          {
+            $y--;
+          }
+          case '>'
+          {
+            $x++;
+          }
+          case '<'
+          {
+            $x--;
+          }
+        }
+        $places->{$x}{$y}++;
       }
-      switch ($d)
-      {
-        case '^'
-        {
-          $$y++;
-        }
-        case 'v'
-        {
-          $$y--;
-        }
-        case '>'
-        {
-          $$x++;
-        }
-        case '<'
-        {
-          $$x--;
-        }
-      }
-      my $p = ($which & 1) == 0 ? 's' : 'r';
-      $places->{$$x}{$$y}{$p}++;
-      $which++;
     }
-  
+
     print Dumper($places);
 
     my $houses = 0;
     foreach my $i (keys(%{$places}))
     {
-      foreach my $j (keys(%{$places->{$i}}))
-      {
-        print length(keys(%{$places->{$i}{$j}})), " ";
-        $houses += length(keys(%{$places->{$i}{$j}}));
-      }
+      $houses += length(keys(%{$places->{$i}}));
     }
     print 'Santa and Robo-Santa delivered presents to ' . $houses . ' houses' . "\n";
-    # 1455 is too low
-    # 2838 is too high
   }
 }
 
