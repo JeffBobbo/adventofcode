@@ -165,19 +165,19 @@ sub day3
     my $sy = 0;
     my $rx = 0;
     my $ry = 0;
-    my $places = {'s' => {0 => {0 => 1}}, 'r' => {0 => { 0 => 1}}};
+    my $places = {0 => {0 => {'s' => 1, 'r' => 1}}};
 
     my $which = 0; # 0 means santa, 1 means Robo-Santa
     for (my $i = 0; $i < length($data); $i++)
     {
       my $d = substr($data, $i, 1);
       
-      my $x = \$rx;
-      my $y = \$rx;
-      if (($which & 1) == 0)
+      my $x = \$sx;
+      my $y = \$sy;
+      if (($which & 1) == 1)
       {
-        $x = \$sx;
-        $y = \$sy;
+        $x = \$rx;
+        $y = \$ry;
       }
       switch ($d)
       {
@@ -198,27 +198,25 @@ sub day3
           $$x--;
         }
       }
-      $places->{($which & 1) ? 'r' : 's'}{$$x}{$$y}++;
+      my $p = ($which & 1) == 0 ? 's' : 'r';
+      $places->{$$x}{$$y}{$p}++;
       $which++;
     }
   
     print Dumper($places);
 
     my $houses = 0;
-    foreach my $w (keys(%{$places}))
+    foreach my $i (keys(%{$places}))
     {
-      foreach my $i (keys(%{$places}))
+      foreach my $j (keys(%{$places->{$i}}))
       {
-        foreach my $j (keys(%{$places->{$i}}))
-        {
-#          if ($places->{$w}{$i}{$j} > 0)
-          {
-            $houses++;
-          }
-        }
+        print length(keys(%{$places->{$i}{$j}})), " ";
+        $houses += length(keys(%{$places->{$i}{$j}}));
       }
     }
     print 'Santa and Robo-Santa delivered presents to ' . $houses . ' houses' . "\n";
+    # 1455 is too low
+    # 2838 is too high
   }
 }
 
