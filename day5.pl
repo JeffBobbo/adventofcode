@@ -21,7 +21,7 @@ my @data = qw(zgsnvdmlfuplrubt vlhagaovgqjmgvwq ffumlmqwfcsyqpss zztdcqzqddaazdj
     next if ($str !~ /([a-z])\1/);
 
     # contains at least three vowels
-    next if ($str !~ /[aeiou].*[aeiou].*[aeiou]/);
+    next if ($str !~ /(?:.*[aeiou]){3}/);
 
     $nice++
   }
