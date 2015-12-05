@@ -43,13 +43,7 @@ my $data = '^^<<v<<v><v^^<><>^^<v<v^>>^^^><^>v^>v><><><<vv^^<^>^^<v^>v>v^v>>>^<>
   my $houses = 0;
   foreach my $i (keys(%{$places}))
   {
-    foreach my $j (keys(%{$places->{$i}}))
-    {
-      if ($places->{$i}{$j} > 0)
-      {
-        $houses++;
-      }
-    }
+    $houses += keys(%{$places->{$i}});
   }
   print 'Santa delivered presents to ' . $houses . ' houses' . "\n";
 }
@@ -101,10 +95,7 @@ my $data = '^^<<v<<v><v^^<><>^^<v<v^>>^^^><^>v^>v><><><<vv^^<^>^^<v^>v>v^v>>>^<>
   my $houses = 0;
   foreach my $i (keys(%{$places}))
   {
-    foreach my $j (keys(%{$places->{$i}}))
-    {
-      $houses += length(keys(%{$places->{$i}{$j}}));
-    }
+     $houses += keys(%{$places->{$i}}); # we don't care who delivered the present, just that it got delievered
   }
   print 'Santa and Robo-Santa delivered presents to ' . $houses . ' houses' . "\n";
 }
