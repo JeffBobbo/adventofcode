@@ -18,18 +18,6 @@ open(my $fh, '<', 'day7.txt') or die "Failed to read input file: $!\n";
 my @lines = <$fh>;
 close($fh);
 
-#@lines = ("4 -> a");
-#@lines = (
-#'123 -> x',
-#'456 -> y',
-#'x AND y -> d',
-#'x OR y -> e',
-#'x LSHIFT 2 -> f',
-#'y RSHIFT 2 -> g',
-#'NOT x -> h',
-#'NOT y -> i'
-#);
-
 my $inst = {};
 
 foreach (@lines)
@@ -45,7 +33,7 @@ foreach (@lines)
   $inst->{$t} = {stack => \@stack, op => $op};
 }
 
-my @targets = qw(a);
+my @targets = qw(a a);
 #my @expect = qw(12 65530 4 3 63);
 for (my $i = 0; $i < @targets; $i++)
 {
@@ -54,6 +42,11 @@ for (my $i = 0; $i < @targets; $i++)
   print $t . ' = ' . $r;
 #  print " -> " . ($expect[$i] == $r ? "good" : "BAD");
   print "\n";
+  foreach my $k (keys(%{$inst}))
+  {
+    delete $inst->{$k}{value};
+  }
+  $inst->{b}{value} = $r;
 }
 exit(0);
 
@@ -61,22 +54,24 @@ exit(0);
 sub value
 {
   my $target = shift();
-
   die "no target found: $target\n" if (! defined($inst->{$target}));
   $target = $inst->{$target};
 
-  my @stack = @{$target->{stack}};
-  if (! exists($target->{value}))
+  if (exists($target->{value}))
   {
-    for (my $i = 0; $i < @stack; $i++)
-    {
-      if ($stack[$i] !~ /^[0-9]+$/)
-      {
-        $stack[$i] = value($stack[$i]);
-      }
-      $stack[$i] = int($stack[$i]);
-    }
+    return $target->{value};
   }
+
+  my @stack = @{$target->{stack}};
+  for (my $i = 0; $i < @stack; $i++)
+  {
+    if ($stack[$i] !~ /^[0-9]+$/)
+    {
+      $stack[$i] = value($stack[$i]);
+    }
+    $stack[$i] = int($stack[$i]);
+  }
+
   if (defined ($target->{op}))
   {
     my $ret;
