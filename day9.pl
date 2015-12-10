@@ -2,9 +2,6 @@
 use warnings;
 use strict;
 
-use Sys::MemInfo qw(freemem);
-use Data::Dumper;
-
 use List::Permutor;
 
 open(my $fh, '<', 'day9.txt') or die "Failed to read input file: $!\n";
