@@ -5,25 +5,29 @@ use strict;
 
 my $data = 3113322113;
 
-for (my $i = 0; $i < 50; $i++)
+my $i = 0;
+for (my $h = 4; $h <= 5; $h++)
 {
-  my $count = 1;
-  my $num = substr($data, 0, 1);
-  my $new = "";
-  for (my $j = 1; $j <= length($data); $j++)
+  for (; $i < 10*$h; $i++)
   {
-    my $n = substr($data, $j, 1);
-    if (!$n or $n != $num)
+    my $count = 1;
+    my $num = substr($data, 0, 1);
+    my $new = "";
+    for (my $j = 1; $j <= length($data); $j++)
     {
-      $new .= $count . $num;
-      $count = 1;
-      $num = $n;
+      my $n = substr($data, $j, 1);
+      if (!$n or $n != $num)
+      {
+        $new .= $count . $num;
+        $count = 1;
+        $num = $n;
+      }
+      else
+      {
+        $count++;
+      }
     }
-    else
-    {
-      $count++;
-    }
+    $data = $new;
   }
-  $data = $new;
+  print "Length after " . ($h*10) . " iterations: " . length($data) . "\n";
 }
-print length($data) . "\n";
