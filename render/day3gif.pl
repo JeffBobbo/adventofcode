@@ -68,7 +68,7 @@ my $data = '^^<<v<<v><v^^<><>^^<v<v^>>^^^><^>v^>v><><><<vv^^<^>^^<v^>v>v^v>>>^<>
     $places->{$x}{$y}++;
     push(@frames, dclone($places)) if ($i % 16 == 0 || $i+1 == length($data));
   }
-  print "\nWriting out image\n";
+  print "\nWriting out image, " . @frames . " frames\n";
   open(my $fh, '>', 'day3p1.gif');
   binmode($fh);
   print $fh $image->animated_gif(1, undef, undef, 2, undef, undef, \@frames, $frame_handler);
@@ -161,7 +161,7 @@ my $data = '^^<<v<<v><v^^<><>^^<v<v^>>^^^><^>v^>v><><><<vv^^<^>^^<v^>v>v^v>>>^<>
     $places->{$$x}{$$y}{$p}++;
     push(@frames, dclone($places)) if ($i % 16 == 0 || $i+1 == length($data));
   }
-  print "\nWriting out image\n";
+  print "\nWriting out image, " . @frames . " frames\n";
   open(my $fh, '>', 'day3p2.gif');
   binmode($fh);
   print $fh $image->animated_gif(1, undef, undef, 2, undef, undef, \@frames, $frame_handler);
