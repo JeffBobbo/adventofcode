@@ -25,7 +25,7 @@ sub parse
   {
     foreach (@{$d})
     {
-      parse($_);
+      parse($_, $b);
     }
   }
   elsif (ref($d) eq 'HASH')
