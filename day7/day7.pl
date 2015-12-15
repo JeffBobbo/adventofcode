@@ -14,7 +14,7 @@ my $ops = {
   'NOT' => { ops => 1, fn => sub { return ~$_[0] } }
 };
 
-open(my $fh, '<', 'day7.txt') or die "Failed to read input file: $!\n";
+open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
 my @lines = <$fh>;
 close($fh);
 

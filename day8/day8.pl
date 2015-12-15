@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-open(my $fh, '<', 'day8.txt') or die "Failed to read input file: $!\n";
+open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
 my @lines = <$fh>;
 close($fh);
 

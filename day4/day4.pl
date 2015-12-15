@@ -5,7 +5,9 @@ use strict;
 
 use Digest::MD5 qw(md5_hex);
 
-my $key = "yzbqklnj";
+open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
+my $key = chomp(join('', <$fh>));
+close($fh);
 
 my $i = 0;
 my $digest = "";

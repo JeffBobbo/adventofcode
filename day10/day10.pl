@@ -3,8 +3,10 @@
 use warnings;
 use strict;
 
-my $data = 3113322113;
-
+open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
+my $data = join('', <$fh>);
+close($fh);
+chomp($data);
 my $i = 0;
 for (my $h = 4; $h <= 5; $h++)
 {

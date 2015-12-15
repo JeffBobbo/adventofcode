@@ -4,7 +4,10 @@ use strict;
 
 use Data::Dumper;
 
-my $data = "vzbxkghb";
+open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
+my $data = join('', <$fh>);
+close($fh);
+chomp($data);
 
 for (my $n = 0; $n < 2; $n++)
 {
