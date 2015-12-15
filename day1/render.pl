@@ -53,16 +53,16 @@ for (my $i = 0; $i < length($data); $i++)
   $ymax = $floor if ($floor > $ymax);
   $ymin = -$floor if ($floor < -$ymin);
 
-  $image->Set("pixel[$x,".($y+$floor)."]"=>"red");
+  $image->Set("pixel[$x,".($y-$floor)."]"=>"red");
   if ($basement == -1 && $floor == -1)
   {
     $basement = $i+1;
-    $image->Draw(stroke=>"blue", primitive=>"line", points=>($x-10).','.($y+$floor-10).' '.($x+10).','.($y+$floor+10));
-    $image->Draw(stroke=>"blue", primitive=>"line", points=>($x+10).','.($y+$floor-10).' '.($x-10).','.($y+$floor+10));
+    $image->Draw(stroke=>"blue", primitive=>"line", points=>($x-10).','.($y-$floor-10).' '.($x+10).','.($y-$floor+10));
+    $image->Draw(stroke=>"blue", primitive=>"line", points=>($x+10).','.($y-$floor-10).' '.($x-10).','.($y-$floor+10));
   }
 }
 my $height = ($ymin + $ymax);
-$image->Crop(width=>$x+5, height=>$height+10, x=>0, y=>$y-$ymin-10);
+$image->Crop(width=>$x+5, height=>$height+20, x=>0, y=>$y-$ymax-10);
 print "\n$x\n";
 my $e = $image->Write("day1.png");
 warn "$e\n" if "$e";
