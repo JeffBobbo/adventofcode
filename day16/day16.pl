@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-use Data::Dumper;
+use JSON qw(from_json);
 
 open(my $fh, '<', 'input.txt') or die "Failed to read input file: $!\n";
 my @lines = <$fh>;
@@ -10,18 +10,17 @@ close($fh);
 
 my $aunts = {};
 
-my $ticker = {
-  children => 3,
-  cats => 7,
-  samoyeds => 2,
-  pomeranians => 3,
-  akitas => 0,
-  vizslas => 0,
-  goldfish => 5,
-  trees => 3,
-  cars => 2,
-  perfumes => 1
-};
+open($fh, '<', 'ticker.json') or die "Failed to read ticker tape: $!\n";
+my $tape = join('', <$fh>);
+close($fh);
+
+if (!defined $tape || length($tape) == 0)
+{
+  print "Bad ticker tape\n";
+  exit(0);
+}
+
+my $ticker = from_json($tape);
 
 my $p1;
 my $p2;
