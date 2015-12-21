@@ -6,7 +6,8 @@ use strict;
 use Data::Dumper;
 
 my @grid;
-my $steps = 1;
+my $steps = 100;
+my $p2 = 0;
 
 open(my $fh, '<', 'input.txt');
 while (<$fh>)
@@ -19,6 +20,15 @@ while (<$fh>)
   push(@grid, \@line);
 }
 close($fh);
+
+
+if ($p2)
+{
+  $grid[0]->[0] = 1;
+  $grid[0]->[99] = 1;
+  $grid[99]->[0] = 1;
+  $grid[99]->[99] = 1;
+}
 
 for (my $i = 0; $i < $steps; $i++)
 {
@@ -34,34 +44,27 @@ for (my $i = 0; $i < $steps; $i++)
       my $minY = max($y - 1, 0);
       my $maxY = min($y + 1, @{$grid[$x]} - 1);
 
-      if ($x == 0 && $y == 5)
+      for (my $j = $minX; $j <= $maxX; $j++)
       {
-        print "$minX, $maxX, $minY, $maxY\n";
-      }
-
-      for my $i ($minX..$maxX)
-      {
-        for my $j ($minY..$maxY)
+        for (my $k = $minY; $k <= $maxY; $k++)
         {
-          next if ($i == 0 && $j == 0);
-          $nCount++ if ($grid[$i]->[$j] == 1);
+          next if ($j == $x && $k == $y);
+          $nCount++ if ($grid[$j]->[$k] == 1);
         }
       }
-
       if ($grid[$x]->[$y] == 1)
       {
-        if ($nCount == 2 || $nCount == 3)
-        {
-          push(@lightsOn, {x => $x, y => $y});
-        }
-        else
+        if ($nCount != 2 && $nCount != 3)
         {
           push(@lightsOff, {x => $x, y => $y});
         }
       }
-      if ($grid[$x][$y] == 0 && $nCount == 3)
+      else
       {
-        push(@lightsOn, {x => $x, y => $y});
+        if ($nCount == 3)
+        {
+          push(@lightsOn, {x => $x, y => $y});
+        }
       }
     }
   }
@@ -74,6 +77,14 @@ for (my $i = 0; $i < $steps; $i++)
   {
     $grid[$_->{x}]->[$_->{y}] = 0;
   }
+}
+
+if ($p2)
+{
+  $grid[0]->[0] = 1;
+  $grid[0]->[99] = 1;
+  $grid[99]->[0] = 1;
+  $grid[99]->[99] = 1;
 }
 
 my $count = 0;
