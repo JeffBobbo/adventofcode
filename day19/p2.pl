@@ -16,8 +16,7 @@ my @steps;
 
 while ($molecule ne 'e')
 {
-  my $b = 0;
-  my $s = 0;
+  my $b = -1;
   for my $i (0..$#replacements)
   {
     my $r = $replacements[$i];
@@ -25,16 +24,14 @@ while ($molecule ne 'e')
 
     my ($from, $to) = ($r =~ /(\w+) => (\w+)/);
 
-    my $j = index($molecule, $from);
+    my $j = index($molecule, $to);
     next if ($j == -1); # not a valid step
-
-    my $l = length($to) - length($from);
-    if ($l > $s && ($from ne 'e' || length($molecule) - $l == 1))
-    {
-      $b = $i;
-      $s = $l;
-    }
+    next if ($from eq 'e' && $to ne $molecule);
+    print "'$from' => '$to'\n";
+    $b = $i;
+    last;
   }
+  next if ($b == -1);
   my ($from, $to) = ($replacements[$b] =~ /(\w+) => (\w+)/);
   $molecule =~ s/$to/$from/;
   print "$to => $from\n";
