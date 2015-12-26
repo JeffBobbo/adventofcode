@@ -23,15 +23,18 @@ my $player = {
   mana => 500,
   def => 0,
 
-  shield   => -1, # when the effect expires, start off
+  shield   => -1, # the turn the effect expires, e.g. 3 means they get the effect on any turn 3 or under, but not on 4 or higher
   poison   => -1,
   recharge => -1,
 };
 
+# I'm being lazy and using randomization to hopefully find the best answer instead of doing it properly
 my $iterations = 5e5;
 
+# @casts is what the best mana use requires to be cast
 my @casts;
-my $best = $iterations;
+my $best = 'Infinity';
+my $hp;
 for my $z (0..$iterations)
 {
   my $mana = 0;
@@ -39,7 +42,7 @@ for my $z (0..$iterations)
   # make clones, keep original data intact.
   my $p = dclone($player);
   my $b = dclone($boss);
-  my @cast;
+  my @cast; # what we've cast this iteration
   while (1)
   {
     # process any running effects
@@ -110,6 +113,7 @@ for my $z (0..$iterations)
     {
       @casts = @cast;
       $best = $mana;
+      $hp = $p->{hp};
     }
   }
   printf("\r%02.2f%%", $z / $iterations * 100);
@@ -117,6 +121,7 @@ for my $z (0..$iterations)
 print "\n";
 print "Mana used to win: $best\n";
 print "Spells cast: @casts\n";
+print "Health remaining: $hp\n";
 
 sub max
 {
