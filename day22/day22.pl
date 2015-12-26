@@ -5,9 +5,12 @@ use strict;
 
 use Storable qw(dclone);
 
+my $hard = ($ARGV[0] && $ARGV[0] eq 'hard') || 0;
+print "Hard mode activatied\n" if ($hard);
+
 my $boss = {
-  hp => 55,
-  dmg => 8
+  hp => 51,
+  dmg => 9
 };
 
 my $spells = {
@@ -45,6 +48,11 @@ for my $z (0..$iterations)
   my @cast; # what we've cast this iteration
   while (1)
   {
+    if ($hard && ($turn % 2) == 0)
+    {
+      $p->{hp} -= 1;
+      last if ($p->{hp} <= 0);
+    }
     # process any running effects
     if ($p->{shield} >= $turn)
     {
@@ -64,47 +72,53 @@ for my $z (0..$iterations)
       $p->{mana} += $spells->{recharge}{mana};
     }
 
-    # find out which spells are available
-    my @available;
-    foreach my $sName (keys(%{$spells}))
+    if (($turn % 2) == 0)
     {
-      my $spell = $spells->{$sName};
-      next if ($spell->{cost} > $p->{mana}); # this costs too much
-      next if ($spell->{dur} && $p->{$sName} > $turn); # this spell has a duration and it's active
-      push(@available, $sName);
-    }
-    # if there aren't any spells to cast, commit seppuku
-    if (@available == 0)
-    {
-      $p->{hp} = 0;
-      last;
-    }
+      # find out which spells are available
+      my @available;
+      foreach my $sName (keys(%{$spells}))
+      {
+        my $spell = $spells->{$sName};
+        next if ($spell->{cost} > $p->{mana}); # this costs too much
+        next if ($spell->{dur} && $p->{$sName} >= $turn); # this spell has a duration and it's active
+        push(@available, $sName);
+      }
+      # if there aren't any spells to cast, commit seppuku
+      if (@available == 0)
+      {
+        $p->{hp} = 0;
+        last;
+      }
 
-    # choose a spell at random
-    my $w = random(scalar(@available));
-    my $spell = $available[$w];
+      # choose a spell at random
+      my $w = random(scalar(@available));
+      my $spell = $available[$w];
 
-    $p->{mana} -= $spells->{$spell}{cost}; # take the cost
-    $mana += $spells->{$spell}{cost}; # and add how much we spent
+      $p->{mana} -= $spells->{$spell}{cost}; # take the cost
+      $mana += $spells->{$spell}{cost}; # and add how much we spent
 
-    # and store what we done
-    push(@cast, $spell);
+      # and store what we done
+      push(@cast, $spell);
 
-    # do the spell
-    if ($spell eq 'magic_missile' || $spell eq 'drain')
-    {
-      $b->{hp} -= $spells->{$spell}{dmg};
-      $p->{hp} += ($spells->{$spell}{hp} || 0);
-    }
+      # do the spell
+      if ($spell eq 'magic_missile' || $spell eq 'drain')
+      {
+        $b->{hp} -= $spells->{$spell}{dmg};
+        $p->{hp} += ($spells->{$spell}{hp} || 0);
+      }
+      else
+      {
+        $p->{$spell} = $turn + $spells->{$spell}{dur};
+      }
+      last if ($b->{hp} <= 0); # did our attack kill the boss?
+      }
     else
     {
-      $p->{$spell} = $turn + $spells->{$spell}{dur};
+      # and the boss hits back
+      my $d = max($b->{dmg} - $p->{def}, 1);
+      $p->{hp} -= $d;
+      last if ($p->{hp} <= 0); # did the boss kill us?
     }
-    last if ($b->{hp} <= 0); # did our attack kill the boss?
-    # and the boss hits back
-    my $d = max($b->{dmg} - $p->{def}, 1);
-    $p->{hp} -= $d;
-    last if ($p->{hp} <= 0); # did the boss kill us?
     $turn++;
   }
   if ($p->{hp} > 0) # did we win?
