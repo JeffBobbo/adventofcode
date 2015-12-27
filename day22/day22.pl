@@ -72,7 +72,7 @@ for my $z (0..$iterations)
       $p->{mana} += $spells->{recharge}{mana};
     }
 
-    if (($turn % 2) == 0)
+    if (($turn % 2) == 0) # is it our turn
     {
       # find out which spells are available
       my @available;
@@ -112,15 +112,14 @@ for my $z (0..$iterations)
       }
       last if ($b->{hp} <= 0); # did our attack kill the boss?
       }
-    else
+    else # the boss hits back
     {
-      # and the boss hits back
       my $d = max($b->{dmg} - $p->{def}, 1);
       $p->{hp} -= $d;
       last if ($p->{hp} <= 0); # did the boss kill us?
     }
     $turn++;
-  }
+  } # while (1)
   if ($p->{hp} > 0) # did we win?
   {
     if ($mana < $best)
