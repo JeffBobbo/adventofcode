@@ -3,46 +3,54 @@
 use warnings;
 use strict;
 
+use Sys::MemInfo qw(freemem);
 use Algorithm::Combinatorics qw(partitions);
 
 open(my $fh, '<', 'input.txt');
 chomp(my @input = <$fh>);
 close($fh);
 
-my $total = 0;
-$total += $_ foreach (@input);
-
+my $total = sum(@input);
 my $weight = $total / 3;
+print "Total mass of presents is $total kg, that's $weight kg per compartment\n";
 
 use List::Permutor;
 
 my @partitions = partitions(\@input);
 
 use Data::Dumper;
+my $bestSize = 'Infinity';
+my $bestQE = 'Infinity';
+my @best;
 foreach (@partitions)
 {
+  memcheck();
   my @a = @{$_};
-  next if (@a != 3);
-  my $good = 1;
-  my @p;
-  foreach my $b (@a)
+#  next if (@a != 3);
+  foreach my $stackRef (@a)
   {
-    if (sum(@{$b}) != $weight)
+    my @stack = @{$stackRef};
+
+    next if (sum(@stack) != $weight);
+    my $size = scalar(@stack);
+    next if ($size > $bestSize);
+    my $qe = product(@stack);
+
+
+    if ($size <= $bestSize)
     {
-      $good = 0;
-      last;
-    }
-    else
-    {
-      push(@p, product(@{$b}));
+      $bestSize = $size;
+      if ($qe < $bestQE)
+      {
+        $bestQE = $qe;
+        @best = @stack;
+      }
     }
   }
-  next unless ($good);
-
-  my @q = sort {$a <=> $b} @p;
-  print "$q[0]\n";
-  print Dumper(@a) if $q[0] == 88;
 }
+
+print "Best size is $bestSize and has a quantum entanglement of $bestQE\n";
+print "@best\n";
 
 sub sum
 {
@@ -56,4 +64,13 @@ sub product
   my $product = 1;
   $product *= $_ foreach(@_);
   return $product;
+}
+
+sub memcheck
+{
+  if (freemem() / 1024 / 1024 / 1024 < 0.5)
+  {
+    print "Running out of RAM, bye!\n";
+    exit(1);
+  }
 }

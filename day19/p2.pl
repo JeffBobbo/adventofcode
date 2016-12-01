@@ -12,31 +12,41 @@ close($fh);
 
 my $molecule = pop(@replacements);
 
-my @steps;
+my $steps = 0;
 
+my $copy = $molecule;
 while ($molecule ne 'e')
 {
-  my $b = -1;
-  for my $i (0..$#replacements)
+  # pick a random replacement to try
+  my $r = $replacements[random(scalar(@replacements))];
+
+  next if (length($r) == 0);
+
+  my ($from, $to) = ($r =~ /(\w+) => (\w+)/);
+
+  my $j = -1;
+  # generate a list of possiblities we can do replacements on
+  my @opts;
+  while (($j = index($molecule, $to, $j+1)) != -1)
   {
-    my $r = $replacements[$i];
-    next if (length($r) == 0);
-
-    my ($from, $to) = ($r =~ /(\w+) => (\w+)/);
-
-    my $j = index($molecule, $to);
-    next if ($j == -1); # not a valid step
-    next if ($from eq 'e' && $to ne $molecule);
-    print "'$from' => '$to'\n";
-    $b = $i;
-    last;
+    push (@opts, $j);
   }
-  next if ($b == -1);
-  my ($from, $to) = ($replacements[$b] =~ /(\w+) => (\w+)/);
-  $molecule =~ s/$to/$from/;
-  print "$to => $from\n";
-  print $molecule . "\n";
-  push(@steps, $b);
+
+  next unless (@opts); # can we actually do a swap?
+
+  # pick a random one to swap
+  my $replace = random(scalar(@opts));
+
+  # and do the repacement
+  substr($copy, $replace, length($to), $from);
+
+  $steps++;
 }
 
 print @steps . "\n";
+exit();
+
+sub random
+{
+  return int(rand(shift()));
+}

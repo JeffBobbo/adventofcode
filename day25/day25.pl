@@ -3,6 +3,7 @@
 use warnings;
 use strict;
 
+<<<<<<< HEAD
 open(my $fh, '<', 'input.txt');
 chomp(my @lines = <$fh>);
 close($fh);
@@ -52,3 +53,34 @@ for (my $i = 1; $i < 7; $i++)
   }
   print "\n";
 }
+=======
+my $start = 20151125;
+my $mult  = 252533;
+my $mod   = 33554393;
+my $code = $start;
+
+my $row = 3010;
+my $col = 3019;
+
+my $x = 1;
+my $y = 1;
+my $maxY = 1;
+
+while ($x != $col || $y != $row)
+{
+  $code *= $mult;
+  $code %= $mod;
+  if ($y > 1)
+  {
+    $x++;
+    $y--;
+  }
+  else
+  {
+    $maxY++;
+    $x = 1;
+    $y = $maxY;
+  }
+}
+print "$code\n";
+>>>>>>> 010983ffb45dbac9ff3aaa35c0678b2f85243a73
